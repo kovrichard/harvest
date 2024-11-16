@@ -26,7 +26,9 @@ function handleArticle(article) {
     newButton.style.fontFamily = 'TwitterChirp, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
 
     newButton.addEventListener('click', () => {
-      console.log('Pressed');
+      // Attempt to find the content within the article
+      const tweetText = article.querySelector('div[data-testid="tweetText"]').textContent;
+      console.log(tweetText);
     });
 
     toolbar.appendChild(newButton);
