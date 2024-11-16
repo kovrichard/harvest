@@ -16,21 +16,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             console.log('Authentication successful. Token:', token);
 
-            // Optionally, fetch user information
-            fetch(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${token}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log('User info:', data);
-                alert(`Hello, ${data.name}!`);
-            })
-            .catch(error => {
-				console.error('Error fetching user info:', error);
-				alert(`Error fetching user info, ${token}`);
-				alert(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${token}`);
+			// Send message to background script to fetch user info
+            chrome.runtime.sendMessage({ type: 'FETCH_USER_INFO', token }, (response) => {
+                if (response.success) {
+                    console.log('[Popup] User info:', response.data);
+                    alert(`Hello, ${response.data.name}!`);
+                } else {
+                    console.error('[Popup] Error fetching user info:', response.error);
+                    alert('Error fetching user info.');
+                }
             });
-
-            // Close the popup after successful authentication
-            window.close();
         });
     });
 });

@@ -31,6 +31,9 @@
     "https://sheets.googleapis.com/*",
     "https://www.googleapis.com/*"
   ],
+  "background": {
+	"service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup/popup.html",
     "default_icon": "icons/icon.png"
