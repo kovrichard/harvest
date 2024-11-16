@@ -21,7 +21,10 @@ function handleArticle(article) {
     newButton.className = 'harvest-button';
     
     newButton.style.marginLeft = '8px';
+    newButton.style.marginTop = 'auto';
+    newButton.style.marginBottom = 'auto';
     newButton.style.padding = '4px 8px';
+    newButton.style.height = '22px';
     newButton.style.backgroundColor = '#1D9BF0';
     newButton.style.color = '#fff';
     newButton.style.border = 'none';
