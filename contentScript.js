@@ -36,7 +36,7 @@ function handleArticle(article) {
     newButton.addEventListener('click', () => {
       // Attempt to find the content within the article
       const tweetText = article.querySelector('div[data-testid="tweetText"]').textContent;
-      addPopup(toolbar);
+      // addPopup(toolbar);
 
       // Send message to background script to write data
       chrome.runtime.sendMessage({ type: 'WRITE_TO_SHEET', data: tweetText }, (response) => {
