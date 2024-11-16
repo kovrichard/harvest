@@ -11,6 +11,11 @@ function handleArticle(article) {
         return;
     }
 
+    const computedStyle = window.getComputedStyle(toolbar);
+    if (computedStyle.position === 'static') {
+        toolbar.style.position = 'relative';
+    }
+
     const newButton = document.createElement('button');
     newButton.textContent = 'Harvest';
     newButton.className = 'harvest-button';
@@ -29,9 +34,35 @@ function handleArticle(article) {
       // Attempt to find the content within the article
       const tweetText = article.querySelector('div[data-testid="tweetText"]').textContent;
       console.log(tweetText);
+      addPopup(toolbar);
     });
 
     toolbar.appendChild(newButton);
+}
+
+function addPopup(parent) {
+  // Create the popup element
+  const popup = document.createElement('div');
+  popup.textContent = 'Hello';
+  popup.className = 'harvest-popup';
+
+  // Style the popup
+  popup.style.position = 'fixed';
+  popup.style.backgroundColor = '#fff';
+  popup.style.color = '#333';
+  popup.style.width = '200px';
+  popup.style.height = '100px';
+  popup.style.border = '1px solid #ccc';
+  popup.style.padding = '8px';
+  popup.style.borderRadius = '4px';
+  popup.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+  popup.style.zIndex = '1000';
+
+  popup.style.right = '16px';
+  popup.style.bottom = '48px';
+
+  // Append the popup to the body
+  parent.appendChild(popup);
 }
 
 // Handle existing articles in the DOM
