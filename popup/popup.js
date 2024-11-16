@@ -4,25 +4,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const authButton = document.getElementById('authButton');
 
     authButton.addEventListener('click', () => {
-        console.log('Auth button clicked');
         chrome.identity.getAuthToken({ interactive: true }, function(token) {
             if (chrome.runtime.lastError || !token) {
-                console.error('Authentication failed:', chrome.runtime.lastError);
                 alert('Authentication failed. Please try again.');
                 return;
             }
 
 			alert('Authentication');
 
-            console.log('Authentication successful. Token:', token);
-
 			// Send message to background script to fetch user info
             chrome.runtime.sendMessage({ type: 'FETCH_USER_INFO', token }, (response) => {
                 if (response.success) {
-                    console.log('[Popup] User info:', response.data);
                     alert(`Hello, ${response.data.name}!`);
                 } else {
-                    console.error('[Popup] Error fetching user info:', response.error);
                     alert('Error fetching user info.');
                 }
             });
@@ -34,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('click', (event) => {
     const popup = document.querySelector('.popup-container');
     if (popup && !popup.contains(event.target)) {
-        console.log('Popup closed by clicking outside.');
         window.close();
     }
 });

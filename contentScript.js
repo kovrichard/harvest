@@ -36,16 +36,13 @@ function handleArticle(article) {
     newButton.addEventListener('click', () => {
       // Attempt to find the content within the article
       const tweetText = article.querySelector('div[data-testid="tweetText"]').textContent;
-      console.log(tweetText);
       addPopup(toolbar);
 
       // Send message to background script to write data
       chrome.runtime.sendMessage({ type: 'WRITE_TO_SHEET', data: tweetText }, (response) => {
           if (response.success) {
-              console.log('[Popup] Data written successfully:', response.data);
               alert('Data successfully written to Google Sheet!');
           } else {
-              console.error('[Popup] Error writing to sheet:', response.error);
               alert(`Error writing to Google Sheet: ${response.error}`);
           }
       });

@@ -51,7 +51,6 @@ async function appendDataToSheet(token, spreadsheetId, data, sheetName = 'Sheet1
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === 'FETCH_USER_INFO') {
         const token = request.token;
-        console.log('[Background] Fetching user info with token:', token);
 
         fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
             headers: {
@@ -59,18 +58,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
         })
         .then(response => {
-            console.log('[Background] Received response:', response);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log('[Background] User info:', data);
             sendResponse({ success: true, data });
         })
         .catch(error => {
-            console.error('[Background] Error fetching user info:', error);
             sendResponse({ success: false, error: error.message });
         });
 
@@ -87,14 +83,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 // Obtain an access token
                 chrome.identity.getAuthToken({ interactive: true }, async (token) => {
                     if (chrome.runtime.lastError || !token) {
-                        console.error('Failed to obtain token:', chrome.runtime.lastError);
                         sendResponse({ success: false, error: chrome.runtime.lastError.message || 'Failed to obtain token.' });
                         return;
                     }
 
                     // If Spreadsheet ID does not exist, create a new Spreadsheet
                     if (!spreadsheetId) {
-                        console.log('No Spreadsheet ID found. Creating a new spreadsheet.');
                         spreadsheetId = await createSpreadsheet(token, 'Harvest Data');
 
                         // Store the new Spreadsheet ID for future use
@@ -106,11 +100,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     // Append data to the Spreadsheet
                     const appendResponse = await appendDataToSheet(token, spreadsheetId, data, 'Sheet1');
 
-                    console.log('Data successfully written to sheet:', appendResponse);
                     sendResponse({ success: true, data: appendResponse });
                 });
             } catch (error) {
-                console.error('Error during write operation:', error);
                 sendResponse({ success: false, error: error.message });
             }
         });
