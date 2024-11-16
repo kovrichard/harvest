@@ -1,33 +1,70 @@
-// popup.js
-
 document.addEventListener('DOMContentLoaded', () => {
-    const authButton = document.getElementById('authButton');
+    const loginButton = document.getElementById('loginButton');
+    const signOutButton = document.getElementById('signOutButton');
+    const loginView = document.getElementById('login-view');
+    const authenticatedView = document.getElementById('authenticated-view');
 
-    authButton.addEventListener('click', () => {
-        chrome.identity.getAuthToken({ interactive: true }, function(token) {
+    // Function to check authentication status
+    function checkAuthStatus() {
+        chrome.identity.getAuthToken({ interactive: false }, (token) => {
             if (chrome.runtime.lastError || !token) {
+                // Not authenticated
+                showLoginView();
+            } else {
+                // Authenticated
+                showAuthenticatedView();
+            }
+        });
+    }
+
+    // Function to show login view
+    function showLoginView() {
+        loginView.classList.remove('hidden');
+        authenticatedView.classList.add('hidden');
+    }
+
+    // Function to show authenticated view
+    function showAuthenticatedView() {
+        loginView.classList.add('hidden');
+        authenticatedView.classList.remove('hidden');
+    }
+
+    // Handle Login Button Click
+    loginButton.addEventListener('click', () => {
+        chrome.identity.getAuthToken({ interactive: true }, (token) => {
+            if (chrome.runtime.lastError || !token) {
+                console.error('Authentication failed:', chrome.runtime.lastError);
                 alert('Authentication failed. Please try again.');
                 return;
             }
 
-			alert('Authentication');
+            // Successfully authenticated
+            showAuthenticatedView();
+            console.log('Authentication successful. Token:', token);
+        });
+    });
 
-			// Send message to background script to fetch user info
-            chrome.runtime.sendMessage({ type: 'FETCH_USER_INFO', token }, (response) => {
-                if (response.success) {
-                    alert(`Hello, ${response.data.name}!`);
+    // Handle Sign Out Button Click
+    signOutButton.addEventListener('click', () => {
+        // Get the current token to remove it
+        chrome.identity.getAuthToken({ interactive: false }, (token) => {
+            if (chrome.runtime.lastError || !token) {
+                console.error('Failed to get token for sign out:', chrome.runtime.lastError);
+                return;
+            }
+
+            // Remove the token
+            chrome.identity.removeCachedAuthToken({ token: token }, () => {
+                if (chrome.runtime.lastError) {
+                    console.error('Failed to remove token:', chrome.runtime.lastError);
                 } else {
-                    alert('Error fetching user info.');
+                    console.log('User signed out successfully.');
+                    showLoginView();
                 }
             });
         });
     });
-});
 
-// Optional: Close the popup when clicking outside
-document.addEventListener('click', (event) => {
-    const popup = document.querySelector('.popup-container');
-    if (popup && !popup.contains(event.target)) {
-        window.close();
-    }
+    // Initial check on load
+    checkAuthStatus();
 });
