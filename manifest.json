@@ -10,13 +10,39 @@
   },
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+	"identity"
   ],
+  "oauth2": {
+    "client_id": "160587698868-ur12aqup6fu0sp70h6n2qb99q6hq7nu7.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/userinfo.email"
+    ]
+  },
   "content_scripts": [
     {
       "matches": ["https://*.x.com/*"],
       "js": ["contentScript.js"],
       "run_at": "document_end"
+    }
+  ],
+  "host_permissions": [
+    "https://sheets.googleapis.com/*",
+    "https://www.googleapis.com/*"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": "icons/icon.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "popup/popup.html",
+        "popup/popup.css",
+        "popup/popup.js"
+      ],
+      "matches": ["<all_urls>"]
     }
   ]
 }
