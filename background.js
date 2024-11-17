@@ -73,7 +73,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         // Indicate that the response will be sent asynchronously
         return true;
     } else if (request.type === 'WRITE_TO_SHEET') {
-        const data = [request.data]; // Data to write to the sheet
+        const data = request.data; // Data to write to the sheet
 
         // Retrieve the stored Spreadsheet ID
         chrome.storage.local.get(['spreadsheetId'], async (result) => {
