@@ -37,11 +37,13 @@ function handleArticle(article) {
       // Attempt to find the content within the article
       const tweetText = article.querySelector('div[data-testid="tweetText"]')?.textContent;
       const analytics = article.querySelector('a[href*="/analytics"]')?.textContent;
+      const links = article.querySelectorAll('a[role="link"]');
+      const writer = Array.from(links).filter(link => link.innerText.includes('@'))[0].innerText;
       
       // addPopup(toolbar);
 
       // Send message to background script to write data
-      chrome.runtime.sendMessage({ type: 'WRITE_TO_SHEET', data: [tweetText, analytics] }, (response) => {
+      chrome.runtime.sendMessage({ type: 'WRITE_TO_SHEET', data: [tweetText, analytics, writer] }, (response) => {
           if (response.success) {
               alert('Data successfully written to Google Sheet!');
           } else {
